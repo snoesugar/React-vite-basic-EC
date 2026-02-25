@@ -1,15 +1,26 @@
-const EditProduct = ({ editProductRef, closeEditModal, updateProduct, newProduct, handleNewProductChange, setNewProduct, errors, handleFileChange }) => {
+const ProductModal = ({
+  modalRef,
+  title,
+  closeModal,
+  submitText = '儲存',
+  submitAction,
+  newProduct,
+  handleNewProductChange,
+  setNewProduct,
+  errors,
+  handleFileChange,
+}) => {
   return (
     <div
       className="modal fade"
-      ref={editProductRef}
+      ref={modalRef}
       tabIndex="-1"
     >
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h1 className="modal-title fs-5" id="exampleModalLabel">編輯產品</h1>
-            <button type="button" className="btn-close" onClick={closeEditModal}></button>
+            <h1 className="modal-title fs-5" id="exampleModalLabel">{title}</h1>
+            <button type="button" className="btn-close" onClick={closeModal}></button>
           </div>
           <div className="modal-body">
             <form className="text-start">
@@ -84,14 +95,14 @@ const EditProduct = ({ editProductRef, closeEditModal, updateProduct, newProduct
                     <label htmlFor="origin_price" className="form-label">產品原價</label>
                     <input
                       type="number"
-                      className={`form-control ${errors.price ? 'is-invalid' : ''}`}
+                      className={`form-control ${errors.origin_price ? 'is-invalid' : ''}`}
                       id="origin_price"
                       value={newProduct.origin_price}
                       onChange={handleNewProductChange}
                       min="0"
                       step="1"
                     />
-                    {errors.price && (
+                    {errors.origin_price && (
                       <div className="invalid-feedback">{errors.origin_price}</div>
                     )}
                   </div>
@@ -170,6 +181,9 @@ const EditProduct = ({ editProductRef, closeEditModal, updateProduct, newProduct
                     )}
                   </div>
                 </div>
+              </div>
+              <hr />
+              <div className="row">
                 {(newProduct.imagesUrl || []).map((img, index) => (
                   <div className="col-6" key={index}>
                     <div className="mb-3">
@@ -205,8 +219,8 @@ const EditProduct = ({ editProductRef, closeEditModal, updateProduct, newProduct
             </form>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={closeEditModal}>取消</button>
-            <button type="button" className="btn btn-primary" onClick={updateProduct}>儲存</button>
+            <button type="button" className="btn btn-secondary" onClick={closeModal}>取消</button>
+            <button type="button" className="btn btn-primary" onClick={submitAction}>{submitText}</button>
           </div>
         </div>
       </div>
@@ -214,4 +228,4 @@ const EditProduct = ({ editProductRef, closeEditModal, updateProduct, newProduct
   )
 }
 
-export default EditProduct
+export default ProductModal

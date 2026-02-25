@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { Modal, Collapse } from 'bootstrap'
-import { ProductList, TempProduct, AddProduct, EditProduct, Pagination, Spinner } from '../../components/Components'
+import { ProductList, TempProduct, ProductModal, Pagination, Spinner } from '../../components/Components'
 import useMessage from '../../hooks/useMessage'
 
 const API_BASE = import.meta.env.VITE_API_BASE
@@ -327,41 +327,9 @@ function AdminProducts() {
       showError(error.response.data.message)
     }
   }
-  // 確認登入，重整還會在後台
+
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        // 從 Cookie 取 token
-        const token = document.cookie
-          .split('; ')
-          .find(row => row.startsWith('hexToken='))
-          ?.split('=')[1]
-
-        if (!token) {
-          setLoading(false)
-          return
-        }
-
-        // 設定 axios header
-        axios.defaults.headers.common['Authorization'] = token
-
-        // 驗證 token 是否有效
-        await axios.post(`${API_BASE}/api/user/check`)
-
-        // 驗證成功
-        await getProducts()
-      }
-      catch {
-        // token 過期或失效
-        delete axios.defaults.headers.common['Authorization']
-      }
-      finally {
-        setLoading(false)
-      }
-    }
-
-    initAuth()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getProducts()
   }, [])
 
   /* ---------- product modal ---------- */
@@ -485,20 +453,24 @@ function AdminProducts() {
                 modalRef={productModalRef}
                 closeModal={closeModal}
               />
-              <AddProduct
+              <ProductModal
                 modalRef={addModalRef}
-                closeAddModal={closeAddModal}
-                addNewProduct={addNewProduct}
+                title="建立新的產品"
+                closeModal={closeAddModal}
+                submitText="儲存"
+                submitAction={addNewProduct}
                 newProduct={newProduct}
                 handleNewProductChange={handleNewProductChange}
                 setNewProduct={setNewProduct}
                 errors={error}
                 handleFileChange={handleFileChange}
               />
-              <EditProduct
-                editProductRef={editProductRef}
-                closeEditModal={closeEditModal}
-                updateProduct={updateProduct}
+              <ProductModal
+                modalRef={editProductRef}
+                title="編輯產品"
+                closeModal={closeEditModal}
+                submitText="儲存"
+                submitAction={updateProduct}
                 newProduct={newProduct}
                 handleNewProductChange={handleNewProductChange}
                 setNewProduct={setNewProduct}

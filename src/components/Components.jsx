@@ -1,5 +1,4 @@
-import AddProduct from './AddProduct'
-import EditProduct from './EditProduct'
+import ProductModal from './ProductModal'
 import Pagination from './Pagination'
 import ProductList from './ProductList'
 import TempProduct from './TempProduct'
@@ -8,8 +7,7 @@ import EditOrder from './EditOrder'
 import MessageToast from './MessageToast'
 
 export {
-  AddProduct,
-  EditProduct,
+  ProductModal,
   Pagination,
   ProductList,
   TempProduct,

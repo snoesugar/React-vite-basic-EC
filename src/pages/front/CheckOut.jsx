@@ -132,6 +132,10 @@ const CheckOut = () => {
             value: 12,
             message: '電話不大於 12 碼',
           },
+          pattern: {
+            value: /^[0-9]+$/,
+            message: '電話只能輸入數字',
+          },
           }}
         />
 

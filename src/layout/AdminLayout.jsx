@@ -1,12 +1,14 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Spinner } from '../components/Components'
 import useMessage from '../hooks/useMessage'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const { showSuccess, showError } = useMessage()
 
@@ -29,6 +31,44 @@ const AdminLayout = () => {
     catch (error) {
       showError(error.response.data.message)
     }
+  }
+
+  // 驗證登入，重整仍可停留後台
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const token = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('hexToken='))
+          ?.split('=')[1]
+
+        if (!token) {
+          navigate('/login')
+          return
+        }
+
+        axios.defaults.headers.common['Authorization'] = token
+
+        await axios.post(`${API_BASE}/api/user/check`)
+      }
+      catch {
+        delete axios.defaults.headers.common['Authorization']
+        navigate('/login')
+      }
+      finally {
+        setLoading(false)
+      }
+    }
+
+    initAuth()
+  }, [navigate])
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <Spinner />
+      </div>
+    )
   }
 
   return (

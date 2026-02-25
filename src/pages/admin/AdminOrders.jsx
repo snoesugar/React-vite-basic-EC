@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Modal } from 'bootstrap'
 import { Spinner, Pagination, EditOrder } from '../../components/Components'
 import useMessage from '../../hooks/useMessage'
@@ -34,7 +33,6 @@ function AdminOrders() {
   const [error, setErrors] = useState({})
   const editOrderRef = useRef(null)
   const editOrderInstance = useRef(null)
-  const navigate = useNavigate()
   const { showSuccess, showError } = useMessage()
 
   /* ---------- 編輯 Modal ---------- */
@@ -54,7 +52,6 @@ function AdminOrders() {
 
       setOrders(res.data.orders)
       setPagination(res.data.pagination)
-      console.log(res.data.orders)
     }
     catch (error) {
       showError(error.response.data.message)
@@ -237,37 +234,8 @@ function AdminOrders() {
     return error
   }
 
-  // 重整驗證
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        const token = document.cookie
-          .split('; ')
-          .find(row => row.startsWith('hexToken='))
-          ?.split('=')[1]
-
-        if (!token) {
-          navigate('/login')
-          return
-        }
-
-        axios.defaults.headers.common['Authorization'] = token
-
-        await axios.post(`${API_BASE}/api/user/check`)
-
-        await getOrders()
-      }
-      catch {
-        delete axios.defaults.headers.common['Authorization']
-        navigate('/login')
-      }
-      finally {
-        setLoading(false)
-      }
-    }
-
-    initAuth()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getOrders()
   }, [])
 
   /* ---------- edit modal ---------- */
